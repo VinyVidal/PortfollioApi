@@ -17,7 +17,7 @@ class SomethingRepository {
      * @return User[]
      */
     public function all() {
-        $models = User::orderBy('created_at');
+        $models = User::orderBy('created_at')->get();
 
         return $models;
     }

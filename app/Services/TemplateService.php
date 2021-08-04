@@ -4,8 +4,19 @@ namespace App\Services;
 use Exception;
 use App\Models\User; #Model
 use App\Exceptions\Response;
+use App\Repositories\UserRepository; #Repository
 
 class SomethingService {
+    /**
+     * @var UserRepository
+     */
+    private $repository;
+    
+    public function __construct(UserRepository $repository)
+    {
+        $this->repository  = $repository;
+    }
+
     public function store(array $data) {
         try {
             $model = new User;
@@ -23,7 +34,7 @@ class SomethingService {
 
     public function update(int $id, array $data) {
         try {
-            $model = User::find($id);
+            $model = $this->repository->byId($id);
             $model->fill($data);
             $model->save();
 
@@ -38,7 +49,7 @@ class SomethingService {
 
     public function delete(int $id) {
         try {
-            $model = User::find($id);
+            $model = $this->repository->byId($id);
             $model->delete();
 
             return [
