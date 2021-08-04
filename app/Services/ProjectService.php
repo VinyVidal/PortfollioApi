@@ -79,8 +79,13 @@ class SomethingService {
     public function delete(int $id) {
         try {
             $project = $this->repository->byId($id);
-            //TODO: handle position
+            $position = $project->position;
             $project->delete();
+
+            foreach($this->repository->allByPositionHigher($position, $project->user) as $p) {
+                $p->position--;
+                $p->save();
+            }
 
             return [
                 'success' => true,
@@ -89,9 +94,5 @@ class SomethingService {
         } catch (Exception $ex) {
             return Response::handle($ex);
         }
-    }
-
-    protected function updatePositions(Project $project) {
-        
     }
 }
