@@ -36,4 +36,8 @@ class ProjectCategory extends Model
      * @var array
      */
     protected $casts = [];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }
