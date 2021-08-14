@@ -4,16 +4,16 @@ namespace App\Services;
 use Exception;
 use App\Models\User;
 use App\Exceptions\Response;
-use App\Repositories\UserRepository;
+use App\Repositories\ApiUserRepository;
 use Laravel\Sanctum\NewAccessToken;
 
-class UserService {
+class ApiUserService {
     /**
-     * @var UserRepository
+     * @var ApiUserRepository
      */
     private $repository;
     
-    public function __construct(UserRepository $repository)
+    public function __construct(ApiUserRepository $repository)
     {
         $this->repository  = $repository;
     }
@@ -77,34 +77,30 @@ class UserService {
         }
     }
 
-    public function revokeToken($userId, ?int $tokenId = null) {
+    public function revokeToken($requestUser, ?int $tokenId = null) {
         try {
-            $user = $this->repository->byId($userId);
-            
             if($tokenId) {
-                $user->tokens()->where('id', $tokenId)->delete();
+                $requestUser->tokens()->where('id', $tokenId)->delete();
             } else {
-                $user->tokens()->currentAccessToken()->delete();
+                $requestUser->currentAccessToken()->delete();
             }
 
             return [
                 'success' => true,
-                'data' => $user
+                'data' => $requestUser
             ];
         } catch (Exception $ex) {
             return Response::handle($ex);
         }
     }
 
-    public function revokeAllTokens($userId) {
+    public function revokeAllTokens($requestUser) {
         try {
-            $user = $this->repository->byId($userId);
-            
-            $user->tokens()->delete();
+            $requestUser->tokens()->delete();
 
             return [
                 'success' => true,
-                'data' => $user
+                'data' => $requestUser
             ];
         } catch (Exception $ex) {
             return Response::handle($ex);

@@ -14,6 +14,15 @@ class ApiUserRepository {
     }
 
     /**
+     * @return ApiUser
+     */
+    public function byEmail($email) {
+        $apiUser = ApiUser::where('email', $email)->first();
+
+        return $apiUser;
+    }
+
+    /**
      * @return ApiUser[]
      */
     public function all() {
