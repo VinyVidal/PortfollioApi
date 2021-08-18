@@ -5,6 +5,7 @@ use Exception;
 use App\Models\User;
 use App\Exceptions\Response;
 use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Hash;
 
 class UserService {
     /**
@@ -21,6 +22,11 @@ class UserService {
         try {
             $user = new User;
             $user->fill($data);
+
+            if(env('PW_CRYPT') === true) {
+                $user->password = Hash::make($data['password']);
+            }
+
             $user->save();
 
             return [
