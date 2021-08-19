@@ -66,4 +66,49 @@ class UserService {
             return Response::handle($ex);
         }
     }
+
+    public function createToken(int $userId, $tokenName = 'access-token') {
+        try {
+            $user = $this->repository->byId($userId);
+
+            $token = $user->createToken($tokenName, ['user:actions']);
+
+            return [
+                'success' => true,
+                'data' => $token
+            ];
+        } catch (Exception $ex) {
+            return Response::handle($ex);
+        }
+    }
+
+    public function revokeToken($requestUser, ?int $tokenId = null) {
+        try {
+            if($tokenId) {
+                $requestUser->tokens()->where('id', $tokenId)->delete();
+            } else {
+                $requestUser->currentAccessToken()->delete();
+            }
+
+            return [
+                'success' => true,
+                'data' => $requestUser
+            ];
+        } catch (Exception $ex) {
+            return Response::handle($ex);
+        }
+    }
+
+    public function revokeAllTokens($requestUser) {
+        try {
+            $requestUser->tokens()->delete();
+
+            return [
+                'success' => true,
+                'data' => $requestUser
+            ];
+        } catch (Exception $ex) {
+            return Response::handle($ex);
+        }
+    }
 }

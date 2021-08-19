@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApiAuthController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,7 +23,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('auth/revoke/{id?}', [ApiAuthController::class, 'revoke']);
     Route::delete('auth/revoke_all', [ApiAuthController::class, 'revokeAll']);
 
+    
+    Route::post('user/auth', [AuthController::class, 'auth']);
     Route::apiResource('user', UsersController::class)->only(['index', 'show', 'store']);
 
-    Route::apiResource('user', UsersController::class)->except(['index', 'show', 'store']);
+    Route::middleware('user.logged')->group(function () {
+        Route::apiResource('user', UsersController::class)->except(['index', 'show', 'store']);
+    });
 });

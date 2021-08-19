@@ -14,6 +14,15 @@ class UserRepository {
     }
 
     /**
+     * @return User
+     */
+    public function byEmail($email) {
+        $user = User::where('email', $email)->first();
+
+        return $user;
+    }
+
+    /**
      * @return User[]
      */
     public function all() {

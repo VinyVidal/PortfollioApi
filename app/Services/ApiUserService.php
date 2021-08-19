@@ -65,8 +65,8 @@ class ApiUserService {
     public function createToken(int $userId, $tokenName = 'access-token') {
         try {
             $user = $this->repository->byId($userId);
-            // TODO: Issue token abilities
-            $token = $user->createToken($tokenName);
+
+            $token = $user->createToken($tokenName, ['basic']);
 
             return [
                 'success' => true,
