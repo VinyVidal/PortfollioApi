@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApiAuthController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,5 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('user.logged')->group(function () {
         Route::apiResource('user', UsersController::class)->except(['index', 'show', 'store']);
+
+        Route::apiResource('project', ProjectsController::class);
     });
 });

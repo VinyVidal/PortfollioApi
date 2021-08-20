@@ -7,7 +7,7 @@ use App\Exceptions\Response;
 use App\Repositories\ProjectRepository;
 use Illuminate\Support\Facades\DB;
 
-class SomethingService {
+class ProjectService {
     /**
      * @var ProjectRepository
      */
@@ -20,11 +20,11 @@ class SomethingService {
 
     public function store(array $data) {
         try {
-            DB::transaction(function () use ($data) {
+            return DB::transaction(function () use ($data) {
                 $project = new Project;
                 $project->fill($data);
 
-                if(!$project->position || $project->position >= $this->repository->maxPosition($project->user)) {
+                if(!$project->position || $project->position > $this->repository->maxPosition($project->user)) {
                     $project->position = $this->repository->maxPosition($project->user) + 1;
                 } else {
                     foreach($this->repository->allByPositionHigher($project->position, $project->user, true) as $p) {
@@ -47,8 +47,13 @@ class SomethingService {
 
     public function update(int $id, array $data) {
         try {
-            DB::transaction(function () use ($id, $data) {
+            return DB::transaction(function () use ($id, $data) {
                 $project = $this->repository->byId($id);
+
+                if(!$project) {
+                    throw new Exception('Project not found', 404);
+                }
+                
                 $oldPosition = $project->position;
                 $project->fill($data);
 
@@ -79,10 +84,16 @@ class SomethingService {
     public function delete(int $id) {
         try {
             $project = $this->repository->byId($id);
+
+            if(!$project) {
+                throw new Exception('Project not found', 404);
+            }
+
             $position = $project->position;
+            $user = $project->user;
             $project->delete();
 
-            foreach($this->repository->allByPositionHigher($position, $project->user) as $p) {
+            foreach($this->repository->allByPositionHigher($position, $user) as $p) {
                 $p->position--;
                 $p->save();
             }
