@@ -35,6 +35,11 @@ class SomethingService {
     public function update(int $id, array $data) {
         try {
             $model = $this->repository->byId($id);
+
+            if(!$model) {
+                throw new Exception('Resource not found', 404);
+            }
+
             $model->fill($data);
             $model->save();
 
@@ -50,6 +55,11 @@ class SomethingService {
     public function delete(int $id) {
         try {
             $model = $this->repository->byId($id);
+
+            if(!$model) {
+                throw new Exception('Resource not found', 404);
+            }
+
             $model->delete();
 
             return [
