@@ -41,6 +41,11 @@ class UserService {
     public function update(int $id, array $data) {
         try {
             $user = $this->repository->byId($id);
+
+            if(!$user) {
+                throw new Exception('User not found', 404);
+            }
+
             $user->fill($data);
             $user->save();
 
@@ -71,6 +76,10 @@ class UserService {
         try {
             $user = $this->repository->byId($userId);
 
+            if(!$user) {
+                throw new Exception('User not found', 404);
+            }
+
             $token = $user->createToken($tokenName, ['user:actions']);
 
             return [
@@ -84,6 +93,10 @@ class UserService {
 
     public function revokeToken($requestUser, ?int $tokenId = null) {
         try {
+            if(!$requestUser) {
+                throw new Exception('User not found', 404);
+            }
+
             if($tokenId) {
                 $requestUser->tokens()->where('id', $tokenId)->delete();
             } else {
@@ -101,6 +114,10 @@ class UserService {
 
     public function revokeAllTokens($requestUser) {
         try {
+            if(!$requestUser) {
+                throw new Exception('User not found', 404);
+            }
+            
             $requestUser->tokens()->delete();
 
             return [

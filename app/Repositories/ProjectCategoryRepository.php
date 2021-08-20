@@ -87,6 +87,12 @@ class ProjectCategoryRepository {
     public function maxPosition(User $user) {
         $category = ProjectCategory::where('user_id', $user->id)->orderBy('position', 'desc')->first();
 
-        return $category->position;
+        $maxPosition = 0;
+
+        if($category) {
+            $maxPosition = $category->position;
+        }
+
+        return $maxPosition;
     }
 }

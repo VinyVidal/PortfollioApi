@@ -36,6 +36,11 @@ class ApiUserService {
     public function update(int $id, array $data) {
         try {
             $user = $this->repository->byId($id);
+
+            if(!$user) {
+                throw new Exception('Api User not found', 404);
+            }
+
             $user->fill($data);
             $user->save();
 
@@ -51,6 +56,11 @@ class ApiUserService {
     public function delete(int $id) {
         try {
             $user = $this->repository->byId($id);
+
+            if(!$user) {
+                throw new Exception('Api User not found', 404);
+            }
+
             $user->delete();
 
             return [
@@ -66,6 +76,10 @@ class ApiUserService {
         try {
             $user = $this->repository->byId($userId);
 
+            if(!$user) {
+                throw new Exception('Api User not found', 404);
+            }
+
             $token = $user->createToken($tokenName, ['basic']);
 
             return [
@@ -79,6 +93,10 @@ class ApiUserService {
 
     public function revokeToken($requestUser, ?int $tokenId = null) {
         try {
+            if(!$requestUser) {
+                throw new Exception('Api User not found', 404);
+            }
+
             if($tokenId) {
                 $requestUser->tokens()->where('id', $tokenId)->delete();
             } else {
@@ -96,6 +114,10 @@ class ApiUserService {
 
     public function revokeAllTokens($requestUser) {
         try {
+            if(!$requestUser) {
+                throw new Exception('Api User not found', 404);
+            }
+            
             $requestUser->tokens()->delete();
 
             return [

@@ -20,7 +20,7 @@ class SomethingService {
 
     public function store(array $data) {
         try {
-            DB::transaction(function () use ($data) {
+            return DB::transaction(function () use ($data) {
                 $category = new ProjectCategory;
                 $category->fill($data);
 
@@ -47,7 +47,7 @@ class SomethingService {
 
     public function update(int $id, array $data) {
         try {
-            DB::transaction(function () use ($id, $data) {
+            return DB::transaction(function () use ($id, $data) {
                 $category = $this->repository->byId($id);
                 $oldPosition = $category->position;
                 $category->fill($data);
@@ -79,10 +79,16 @@ class SomethingService {
     public function delete(int $id) {
         try {
             $category = $this->repository->byId($id);
+
+            if(!$category) {
+                throw new Exception('Project Category not found', 404);
+            }
+
             $position = $category->position;
+            $user = $category->user;
             $category->delete();
 
-            foreach($this->repository->allByPositionHigher($position, $category->user) as $p) {
+            foreach($this->repository->allByPositionHigher($position, $user) as $p) {
                 $p->position--;
                 $p->save();
             }
