@@ -17,9 +17,10 @@ class ProjectCategoryRepository {
     /**
      * @return ProjectCategory
      */
-    public function byPosition(int $position) {
-        $category = ProjectCategory::where('position', $position)
-                          ->first();
+    public function byPosition(int $position, User $user) {
+        $category = ProjectCategory::where('user_id', $user->id)
+                                   ->where('position', $position)
+                                   ->first();
 
         return $category;
     }
@@ -29,7 +30,7 @@ class ProjectCategoryRepository {
      */
     public function all() {
         $categories = ProjectCategory::orderBy('position')
-                           ->get();
+                                     ->get();
 
         return $categories;
     }
@@ -39,8 +40,8 @@ class ProjectCategoryRepository {
      */
     public function allByUser(User $user) {
         $categories = ProjectCategory::where('user_id', $user->id)
-                           ->orderBy('position')
-                           ->get();
+                                     ->orderBy('position')
+                                     ->get();
 
         return $categories;
     }

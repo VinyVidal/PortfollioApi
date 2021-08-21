@@ -17,8 +17,9 @@ class ProjectRepository {
     /**
      * @return Project
      */
-    public function byPosition(int $position) {
-        $project = Project::where('position', $position)
+    public function byPosition(int $position, User $user) {
+        $project = Project::where('user_id', $user->id)
+                          ->where('position', $position)
                           ->first();
 
         return $project;

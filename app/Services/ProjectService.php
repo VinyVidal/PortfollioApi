@@ -83,6 +83,7 @@ class ProjectService {
 
     public function delete(int $id) {
         try {
+            //TODO: Also delete related models (images, links)
             $project = $this->repository->byId($id);
 
             if(!$project) {

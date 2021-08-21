@@ -37,4 +37,8 @@ class ProjectImage extends Model
      * @var array
      */
     protected $casts = [];
+
+    public function project() {
+        return $this->belongsTo(Project::class);
+    }
 }
