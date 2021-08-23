@@ -7,7 +7,7 @@ use App\Exceptions\Response;
 use App\Repositories\ProjectCategoryRepository;
 use Illuminate\Support\Facades\DB;
 
-class SomethingService {
+class ProjectCategoryService {
     /**
      * @var ProjectCategoryRepository
      */
